@@ -1,0 +1,35 @@
+services:
+  gps-simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gps-simulator:local
+    container_name: gps-simulator
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+    environment:
+      PYTHONUNBUFFERED: "1"
+    command: ["--mode", "software"]
+
+  gps-simulator-hardware:
+    profiles: ["hardware"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gps-simulator:local
+    container_name: gps-simulator-hardware
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+    environment:
+      PYTHONUNBUFFERED: "1"
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+      # Если ZED-F9P проброшен в WSL как /dev/ttyACM0 — раскомментируйте:
+      # - /dev/ttyACM0:/dev/ttyACM0
+    device_cgroup_rules:
+      - "c 189:* rwm"
+      # Для ttyACM (major 166):
+      # - 'c 166:* rwm'
+    command: ["--mode", "hardware"]

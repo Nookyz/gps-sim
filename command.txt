@@ -1,0 +1,76 @@
+# Собрать образ (первый раз и после изменений в Dockerfile/requirements.txt)
+docker compose build
+
+# Собрать без кэша (если что-то «залипло»)
+docker compose build --no-cache
+
+# Software-режим по умолчанию (только проверки, без USB и RF)
+docker compose up
+
+# Software-режим в фоне
+docker compose up -d
+
+# Hardware-режим (профиль hardware, проброс USB)
+docker compose --profile hardware up gps-simulator-hardware
+
+# Остановить контейнеры (Ctrl+C, если запущено в foreground)
+docker compose down
+
+# Остановить и удалить контейнеры + сети
+docker compose down --remove-orphans
+
+# Удалить образ проекта (если нужно пересобрать с нуля)
+docker compose down --rmi local
+
+# Проверить конфигурацию compose (без запуска)
+docker compose config
+
+# Посмотреть логи запущенного контейнера
+docker compose logs
+
+# Логи в реальном времени
+docker compose logs -f
+
+# Список запущенных контейнеров проекта
+docker compose ps
+
+# Список всех образов проекта
+docker compose images
+
+1. Только проверки (без генерации, без RF)
+
+docker compose run --rm gps-simulator
+docker compose run --rm gps-simulator --mode software
+
+2. Проверки + генерация IQ
+
+# Сгенерировать gpssim.bin и выйти
+docker compose run --rm gps-simulator --mode software --generate --detached
+
+# Сгенерировать и запустить мониторинг (без RF)
+docker compose run --rm gps-simulator --mode software --generate
+
+3. Hardware-проверки (HackRF виден контейнеру)
+
+# Проверить, видит ли контейнер HackRF (без RF-передачи)
+docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --detached
+
+4. Передача сигнала через HackRF (без ZED-F9P)
+
+# Генерация + передача в цикле (Ctrl+C для остановки)
+docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --generate --tx
+
+# Передача уже существующего gpssim.bin
+docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --tx
+
+5. RF-тест с ZED-F9P
+
+# Генерация + передача + чтение UBX с приёмника (90 секунд)
+docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --generate --rf
+
+# RF-тест без генерации (использует существующий gpssim.bin)
+docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --rf
+
+6. Полный прогон (как в start-gps-sim.bat)
+
+docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --generate --tx

@@ -1,0 +1,11 @@
+.git
+.gitignore
+gps-sdr-sim/
+gpssim.bin
+*.bin
+*.o
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
