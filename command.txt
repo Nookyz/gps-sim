@@ -1,76 +1,76 @@
-# Собрать образ (первый раз и после изменений в Dockerfile/requirements.txt)
+# Build the image (first run and after changes to Dockerfile/requirements.txt)
 docker compose build
 
-# Собрать без кэша (если что-то «залипло»)
+# Build without cache (if something gets stuck)
 docker compose build --no-cache
 
-# Software-режим по умолчанию (только проверки, без USB и RF)
+# Default software mode (checks only, no USB or RF)
 docker compose up
 
-# Software-режим в фоне
+# Run software mode in the background
 docker compose up -d
 
-# Hardware-режим (профиль hardware, проброс USB)
+# Hardware mode (hardware profile, USB passthrough)
 docker compose --profile hardware up gps-simulator-hardware
 
-# Остановить контейнеры (Ctrl+C, если запущено в foreground)
+# Stop containers (press Ctrl+C if running in foreground)
 docker compose down
 
-# Остановить и удалить контейнеры + сети
+# Stop and remove containers and networks
 docker compose down --remove-orphans
 
-# Удалить образ проекта (если нужно пересобрать с нуля)
+# Remove the project image (if a clean rebuild is required)
 docker compose down --rmi local
 
-# Проверить конфигурацию compose (без запуска)
+# Validate the Compose configuration (without starting containers)
 docker compose config
 
-# Посмотреть логи запущенного контейнера
+# View logs from running containers
 docker compose logs
 
-# Логи в реальном времени
+# Follow logs in real time
 docker compose logs -f
 
-# Список запущенных контейнеров проекта
+# List running containers for the project
 docker compose ps
 
-# Список всех образов проекта
+# List all project images
 docker compose images
 
-1. Только проверки (без генерации, без RF)
+1. Checks only (no generation, no RF)
 
 docker compose run --rm gps-simulator
 docker compose run --rm gps-simulator --mode software
 
-2. Проверки + генерация IQ
+2. Checks + IQ generation
 
-# Сгенерировать gpssim.bin и выйти
+# Generate gpssim.bin and exit (without monitoring)
 docker compose run --rm gps-simulator --mode software --generate --detached
 
-# Сгенерировать и запустить мониторинг (без RF)
+# Generate IQ data and start monitoring (no RF; press Ctrl+C to stop)
 docker compose run --rm gps-simulator --mode software --generate
 
-3. Hardware-проверки (HackRF виден контейнеру)
+3. Hardware checks (HackRF accessible from the container)
 
-# Проверить, видит ли контейнер HackRF (без RF-передачи)
+# Check whether the container can detect HackRF (no RF transmission)
 docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --detached
 
-4. Передача сигнала через HackRF (без ZED-F9P)
+4. Signal transmission via HackRF (without ZED-F9P)
 
-# Генерация + передача в цикле (Ctrl+C для остановки)
+# Generate IQ data and transmit continuously (press Ctrl+C to stop)
 docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --generate --tx
 
-# Передача уже существующего gpssim.bin
+# Transmit an existing gpssim.bin file
 docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --tx
 
-5. RF-тест с ZED-F9P
+5. RF test with ZED-F9P
 
-# Генерация + передача + чтение UBX с приёмника (90 секунд)
+# Generate IQ data, transmit, and read UBX data from the receiver (90 seconds)
 docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --generate --rf
 
-# RF-тест без генерации (использует существующий gpssim.bin)
+# RF test without generation (uses the existing gpssim.bin file)
 docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --rf
 
-6. Полный прогон (как в start-gps-sim.bat)
+6. Full run (same as start-gps-sim.bat)
 
 docker compose --profile hardware run --rm gps-simulator-hardware --mode hardware --generate --tx

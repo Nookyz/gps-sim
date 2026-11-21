@@ -17,7 +17,7 @@ GPS_SDR_MAKEFILE = GPS_SDR_DIR / "Makefile"
 GPS_SDR_EXECUTABLE = GPS_SDR_DIR / "gps-sdr-sim"
 GPS_SDR_OUTPUT = GPS_SDR_DIR / "gpssim.bin"
 
-SECONDS_TO_RUN = 360
+SECONDS_TO_RUN = 300
 
 LOCATIONS = {
     "hangzhou": {

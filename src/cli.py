@@ -65,16 +65,12 @@ def main():
             return 1
         return 0
 
-    # if args.tx:
-    #     if args.mode != "hardware":
-    #         print("[ERROR] --tx requires --mode hardware.")
-    #         return 1
-    #     run_transmission_loop()
-    #     return 0
+    if args.tx:
+        if args.mode != "hardware":
+            print("[ERROR] --tx requires --mode hardware.")
+            return 1
+        run_transmission_loop()
+        return 0
 
-    # print("\n[INFO] No --tx/--rf passed; starting monitor-only loop (no RF).")
-    # run_transmission_loop.__self__ if False else None  # noqa — просто чтобы напомнить
-    # # На самом деле: без --tx/--rf передача не запускается.
-    # # Если нужен только мониторинг — он был в monitor.py, но здесь он не нужен.
-    # print("[INFO] Nothing to do. Pass --tx or --rf to transmit.")
+    print("\n[INFO] Nothing to do. Pass --tx or --rf to transmit.")
     return 0
